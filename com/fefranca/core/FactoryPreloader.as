@@ -24,7 +24,6 @@ package com.fefranca.core
 			
 			_mainClassName = mainClassName;
 			_preloader = preloader;
-			_preloader.init();
 			addChild(_preloader.displayObject);
 			
 			addEventListener(Event.ENTER_FRAME, checkFrame);

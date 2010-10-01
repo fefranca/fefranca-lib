@@ -3,32 +3,36 @@ package com.fefranca.control
 import flash.display.MovieClip;
 import flash.display.Sprite;
 import flash.display.DisplayObject;
-import com.fefranca.core.IDisposable;
-import com.fefranca.core.IVisible;
-import com.fefranca.display.safeRemoveChild;
+import potato.core.IDisposable;
+import potato.core.IVisible;
+import potato.display.safeRemoveChild;
 
 public class SimpleAsset extends Sprite implements IDisposable, IVisible
 {
-	private var _asset:MovieClip;
-	private var _behavior:IVisibleBehavior;
-	private var _hidden:Boolean;
+	protected var _asset:MovieClip;
+	protected var _behavior:IVisibleBehavior;
+	protected var _hidden:Boolean;
 	
 	public function SimpleAsset(asset:MovieClip, behavior:IVisibleBehavior)
 	{
 		_asset = asset;
+		
 		this.mouseEnabled = false;
 		this.mouseChildren = false;
-		_behavior = behavior;
-	}
-	
-	public function init():void
-	{
-		_behavior.asset = _asset;
-		_behavior.init();
 		
+		_behavior = behavior;
+		_behavior.asset = _asset;
+	
 		_hidden = !_behavior.visible;
 		this.visible = _behavior.visible;
 		
+		
+		if(_asset.parent){
+			safeRemoveChild(_asset);
+			this.x = _asset.x;
+			this.y = _asset.y;
+			_asset.x = _asset.y = 0;
+		}	
 		addChild(_asset);
 	}
 	
@@ -60,6 +64,11 @@ public class SimpleAsset extends Sprite implements IDisposable, IVisible
 	public function get displayObject():DisplayObject
 	{
 		return this;
+	}
+	
+	public function get asset():MovieClip
+	{
+		return _asset;
 	}
 	
 }

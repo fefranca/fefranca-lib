@@ -6,9 +6,8 @@ import flash.events.SecurityErrorEvent;
 import flash.media.SoundTransform;
 import flash.net.NetConnection;
 import flash.net.NetStream;
-
-import com.fefranca.core.IDisposable;
 import com.fefranca.events.AudioStreamEvent;
+import potato.core.IDisposable;
 
 /**
  *  Dispatched when an error occurs.

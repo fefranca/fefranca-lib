@@ -1,8 +1,8 @@
 package com.fefranca.utils
 {
-import com.fefranca.core.IDisposable;
 import flash.utils.Timer;
 import flash.events.TimerEvent;
+import potato.core.IDisposable;
 
 public class DelayedCall implements IDisposable
 {
