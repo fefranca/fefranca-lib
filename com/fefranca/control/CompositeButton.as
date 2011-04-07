@@ -18,15 +18,17 @@ package com.fefranca.control
 		protected var _behavior:IButtonBehavior;
 		protected var _enabled:Boolean = false;
 		protected var _visible:Boolean = false;
-		protected var _onMouseClick:Function;
+		protected var _onClick:Function;
 		
-		public function CompositeButton(buttonAsset:MovieClip, behavior:IButtonBehavior, onMouseClick:Function = null) {
+		public function CompositeButton(buttonAsset:MovieClip, behavior:IButtonBehavior, onClick:Function = null)
+		{
 			_asset = buttonAsset;
 			_behavior = behavior;
- 			_onMouseClick = onMouseClick;
+ 			_onClick = onClick;
 			
 			// Smart auto-replace
-			if(_asset.parent){
+			if(_asset.parent)
+			{
 				safeRemoveChild(_asset);
 				this.x = _asset.x;
 				this.y = _asset.y;
@@ -36,61 +38,57 @@ package com.fefranca.control
 			// Define our hit area
 			if(_asset.hasOwnProperty("hit")){
 				_hitArea = _asset.hit;
-				_asset.removeChild(_asset.hit);
 			}
 			else {
 				var r:Rectangle = _asset.getBounds(_asset);
 				_hitArea = new Sprite();
 				_hitArea.graphics.beginFill(0, 0);
 				_hitArea.graphics.drawRect(r.x, r.y, r.width, r.height);
+				_asset.addChild(_hitArea);
 			}
+			hitArea = _hitArea;
+			
+			// Initialize enabled
+			enabled = false;
 			
 			// Add children
 			addChild(_asset);
-			_asset.addChild(_hitArea);
 			
 			// Initialize behavior
+			_visible = false;
+			visible = false;
 			_behavior.asset = _asset;
-			_visible = _behavior.visible;
-			setEnabled(_behavior.visible);
 		}
 		
-		public function get hitSprite():Sprite {
-			return _hitArea;
+		public function set onClick(value:Function):void
+		{
+		  _onClick = value;
 		}
 		
 		public function set enabled(value:Boolean):void
 		{
 			if(value != _enabled){
-				setEnabled(value);
+				_enabled = value;
+  			if(_enabled) {
+  				this.addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
+  				this.addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
+  				this.addEventListener(MouseEvent.CLICK, onMouseClick);
+  			}
+  			else {
+  				this.removeEventListener(MouseEvent.ROLL_OVER, onMouseOver);
+  				this.removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
+  				this.removeEventListener(MouseEvent.CLICK, onMouseClick)
+  			}
+        //this.mouseEnabled = this.mouseChildren = value;
+  			_hitArea.visible = value;
+  		  this.buttonMode = value;
+  			this.useHandCursor = value;
+  			this.mouseChildren = this.mouseEnabled = value;
 			}
 		}
 		
 		public function get enabled():Boolean {
 			return _enabled;
-		}
-		
-		protected function setEnabled(value:Boolean):void
-		{
-			_enabled = value;
-			if(value == true) {
-				_hitArea.addEventListener(MouseEvent.ROLL_OVER, handleMouseOver);//_behavior.onMouseOver);
-				_hitArea.addEventListener(MouseEvent.ROLL_OUT, handleMouseOut);//_behavior.onMouseOut);
-				_hitArea.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);//_behavior.onMouseDown);
-				_hitArea.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);//_behavior.onMouseUp);
-				_hitArea.addEventListener(MouseEvent.CLICK, handleMouseClick);//_behavior.onMouseClick);
-			}
-			else {
-				_hitArea.removeEventListener(MouseEvent.ROLL_OVER, handleMouseOver);
-				_hitArea.removeEventListener(MouseEvent.ROLL_OUT, handleMouseOut);
-				_hitArea.removeEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
-				_hitArea.removeEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
-				_hitArea.removeEventListener(MouseEvent.CLICK, handleMouseClick)
-			}
-			this.mouseEnabled = this.mouseChildren = value;
-			_hitArea.visible = value;
-			_hitArea.buttonMode = value;
-			_hitArea.useHandCursor = value;
 		}
 		
 		public function dispose():void
@@ -100,12 +98,12 @@ package com.fefranca.control
 			safeRemoveChild(_asset);
 			safeRemoveChild(_hitArea);
 			
-			_behavior.dispose();
+			if(_behavior) _behavior.dispose();
 			
 			_asset = null;
 			_hitArea = null;
 			_behavior = null;
-			_onMouseClick = null;
+			_onClick = null;
 		}
 		
 		public function show():void {
@@ -113,7 +111,7 @@ package com.fefranca.control
 				_visible = true;
 				visible = true;
 				enabled = true;
-				_behavior.show();
+				if(_behavior) _behavior.show();
 			}
 		}
 		
@@ -121,47 +119,24 @@ package com.fefranca.control
 			if(_visible){
 				_visible = false;
 				enabled = false;
-				_behavior.hide();
+				if(_behavior) _behavior.hide();
 			}
 		}
 		
-		public function get asset():MovieClip {
-			return _asset;
-		}
-		
-		public function get displayObject():DisplayObject
+		protected function onMouseOver(e:MouseEvent):void
 		{
-			return this;
+			if(_behavior) _behavior.onMouseOver(e);
 		}
 		
-		public function set onMouseClick(value:Function):void
+		protected function onMouseOut(e:MouseEvent):void
 		{
-			_onMouseClick = value;
+			if(_behavior) _behavior.onMouseOut(e);
 		}
 		
-		/**
-		 * Handles mouse click events 
-		 * @param e MouseEvent 
-		 */
-		protected function handleMouseClick(e:MouseEvent):void {
-			_behavior.onMouseClick(e);
-			if(_onMouseClick != null) _onMouseClick(e);
-		}
-		
-		protected function handleMouseOver(e:MouseEvent):void {
-			_behavior.onMouseOver(e);
-		}
-		
-		protected function handleMouseOut(e:MouseEvent):void {
-			_behavior.onMouseOut(e);
-		}
-		
-		protected function handleMouseUp(e:MouseEvent):void {
-			_behavior.onMouseUp(e);
-		}
-		
-		protected function handleMouseDown(e:MouseEvent):void {
-			_behavior.onMouseDown(e);
+		protected function onMouseClick(e:MouseEvent):void
+		{
+			if(_behavior) _behavior.onMouseClick(e);
+			if(_onClick != null) _onClick(e);
 		}
 	}
 }

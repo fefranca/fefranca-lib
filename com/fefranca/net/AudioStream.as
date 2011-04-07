@@ -6,7 +6,7 @@ import flash.events.SecurityErrorEvent;
 import flash.media.SoundTransform;
 import flash.net.NetConnection;
 import flash.net.NetStream;
-import com.fefranca.events.AudioStreamEvent;
+import com.fefranca.net.events.AudioStreamEvent;
 import potato.core.IDisposable;
 
 /**

@@ -1,4 +1,4 @@
-package com.fefranca.events
+package com.fefranca.net.events
 {
 	import flash.events.Event;
 

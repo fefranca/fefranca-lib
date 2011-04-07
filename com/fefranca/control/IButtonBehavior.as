@@ -6,8 +6,12 @@ package com.fefranca.control
 	{
 		function onMouseOver(e:MouseEvent):void;
 		function onMouseOut(e:MouseEvent):void;
-		function onMouseDown(e:MouseEvent):void;
-		function onMouseUp(e:MouseEvent):void;
 		function onMouseClick(e:MouseEvent):void;
+		
+	  // Inherited:
+    // function set asset(asset:MovieClip):void;
+		// function dispose():void;
+		// function show():void;
+		// function hide():void;
 	}
 }

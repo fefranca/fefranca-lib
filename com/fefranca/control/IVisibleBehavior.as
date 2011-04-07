@@ -7,8 +7,8 @@ package com.fefranca.control
 	public interface IVisibleBehavior extends IDisposable, IVisible
 	{
 		function set asset(asset:MovieClip):void;
-		function get visible():Boolean;
-	
+		
+	  // Inherited:
 		//function dispose():void;
 		//function show():void;
 		//function hide():void;
