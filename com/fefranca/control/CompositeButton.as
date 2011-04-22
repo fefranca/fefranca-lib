@@ -38,6 +38,8 @@ package com.fefranca.control
 			// Define our hit area
 			if(_asset.hasOwnProperty("hit")){
 				_hitArea = _asset.hit;
+				safeRemoveChild(_hitArea);
+				_asset.addChild(_hitArea);
 			}
 			else {
 				var r:Rectangle = _asset.getBounds(_asset);
@@ -57,7 +59,7 @@ package com.fefranca.control
 			// Initialize behavior
 			_visible = false;
 			visible = false;
-			_behavior.asset = _asset;
+			if(_behavior) _behavior.asset = _asset;
 		}
 		
 		public function set onClick(value:Function):void
@@ -77,13 +79,14 @@ package com.fefranca.control
   			else {
   				this.removeEventListener(MouseEvent.ROLL_OVER, onMouseOver);
   				this.removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-  				this.removeEventListener(MouseEvent.CLICK, onMouseClick)
+  				this.removeEventListener(MouseEvent.CLICK, onMouseClick);
   			}
         //this.mouseEnabled = this.mouseChildren = value;
   			_hitArea.visible = value;
   		  this.buttonMode = value;
   			this.useHandCursor = value;
-  			this.mouseChildren = this.mouseEnabled = value;
+  			this.mouseChildren = false;
+  			this.mouseEnabled = value;
 			}
 		}
 		
